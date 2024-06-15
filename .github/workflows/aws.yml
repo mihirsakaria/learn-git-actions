@@ -96,3 +96,7 @@ jobs:
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
+    - name: Output ECS service events for debugging
+      run: |
+        aws ecs describe-services --services ${{ env.ECS_SERVICE }} --cluster ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
