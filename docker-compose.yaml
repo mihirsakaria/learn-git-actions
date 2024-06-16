@@ -19,6 +19,7 @@ services:
       - unifyx_network
   
   scheduler:
+    image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1
     build:
       context: .
       dockerfile: ./Dockerfile.a
@@ -26,6 +27,7 @@ services:
     restart: always
     
   worker:
+    image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
     build:
       context: .
       dockerfile: ./Dockerfile.b
