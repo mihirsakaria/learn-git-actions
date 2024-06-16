@@ -1,0 +1,35 @@
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    env_file:
+      - .env
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - test-net
+      - unifyx_network
+  
+  scheduler:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.a
+    container_name: scheduler
+    restart: always
+    
+  worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.b
+    container_name: worker
+    ports:
+      - 9191:9191
+    restart: always
