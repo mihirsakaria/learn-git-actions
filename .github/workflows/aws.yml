@@ -78,7 +78,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         ls
-        docker compose build .
+        docker compose build
         docker compose push
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1" >> $GITHUB_OUTPUT
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
