@@ -64,8 +64,8 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
-    - name: List Files for Debugging
-      run: ls -al .
+    # - name: List Files for Debugging
+    #   run: ls -al .
     
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -83,33 +83,62 @@ jobs:
         echo "image1=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1" >> $GITHUB_OUTPUT
         echo "image2=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
     
-    - name: Show images just created
-      run: echo ${{steps.build-image.outputs.image1}} ${{steps.build-image.outputs.image2}}
-    
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def-image1
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME1 }}
-        image: ${{ steps.build-image.outputs.image1 }}
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def-image2
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def-image1.outputs.task-definition }}
-        container-name: ${{ env.CONTAINER_NAME2 }}
-        image: ${{ steps.build-image.outputs.image2 }}
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def-image2.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
-    - name: Output ECS service events for debugging
+    - name: Deploy to EC2
       run: |
-        aws ecs describe-services --services ${{ env.ECS_SERVICE }} --cluster ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }}
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          # Ensure Docker is installed
+          if ! [ -x "$(command -v docker)" ]; then
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+          fi
+
+          # Log in to Amazon ECR
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 851725252778.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+
+          # Pull the Docker image
+          docker pull 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+
+          # Run the Docker container
+          docker run -d -p 8000:8000 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+        EOF
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ env.AWS_REGION }}
+
+    
+    # - name: Show images just created
+    #   run: echo ${{steps.build-image.outputs.image1}} ${{steps.build-image.outputs.image2}}
+    
+    # - name: Fill in the new image ID in the Amazon ECS task definition
+    #   id: task-def-image1
+    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #   with:
+    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
+    #     container-name: ${{ env.CONTAINER_NAME1 }}
+    #     image: ${{ steps.build-image.outputs.image1 }}
+
+    # - name: Fill in the new image ID in the Amazon ECS task definition
+    #   id: task-def-image2
+    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #   with:
+    #     task-definition: ${{ steps.task-def-image1.outputs.task-definition }}
+    #     container-name: ${{ env.CONTAINER_NAME2 }}
+    #     image: ${{ steps.build-image.outputs.image2 }}
+
+    # - name: Deploy Amazon ECS task definition
+    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+    #   with:
+    #     task-definition: ${{ steps.task-def-image2.outputs.task-definition }}
+    #     service: ${{ env.ECS_SERVICE }}
+    #     cluster: ${{ env.ECS_CLUSTER }}
+    #     wait-for-service-stability: true
+    # - name: Output ECS service events for debugging
+    #   run: |
+    #     aws ecs describe-services --services ${{ env.ECS_SERVICE }} --cluster ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }}
 
