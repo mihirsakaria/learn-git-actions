@@ -5,14 +5,16 @@ services:
       context: .
       dockerfile: ./Dockerfile.a
     container_name: scheduler
+    ports:
+      - "8000:8000"
     restart: always
     
   worker:
     image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
     build:
-      context: .
+      context: server2
       dockerfile: ./Dockerfile.b
     container_name: worker
     ports:
-      - 8000:80
+      - "8001:8001"
     restart: always
