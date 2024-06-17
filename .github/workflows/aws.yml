@@ -80,9 +80,12 @@ jobs:
         ls
         docker compose build
         docker compose push
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1" >> $GITHUB_OUTPUT
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
-
+        echo "image1=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1" >> $GITHUB_OUTPUT
+        echo "image2=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
+    
+    - name: Show images just created
+      run: echo ${{steps.build-iamge.outputs.image1}} ${{steps.build-iamge.outputs.image2}}
+    
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def-image1
       uses: aws-actions/amazon-ecs-render-task-definition@v1
