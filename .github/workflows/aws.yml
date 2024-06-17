@@ -98,7 +98,7 @@ jobs:
           fi
           # echo "docker is installed : ${{env.AWS_ACCESS_KEY_ID}} , ${{env.ECR_REPOSITORY}} , ${{  env.AWS_REGION  }}"
           # Log in to Amazon ECR
-          aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{ env.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin 851725252778.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
           # aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin 851725252778.dkr.ecr.ap-south-1.amazonaws.com
           echo "aws cli logged in"
           # Pull the Docker image
@@ -110,7 +110,7 @@ jobs:
         EOF
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         # AWS_REGION: ${{ env.AWS_REGION }}
 
     
