@@ -37,8 +37,8 @@ env:
   ECS_CLUSTER: practiceCluster3                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: practice           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  CONTAINER_NAME1: practice1           # set this to the name of the container in the
+  CONTAINER_NAME2: practice2                   # containerDefinitions section of your task definition
 
 permissions:
   contents: read
@@ -84,17 +84,25 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: task-def-image1
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
+        container-name: ${{ env.CONTAINER_NAME1 }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def-image2
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-image1.outputs.task-definition }}
+        container-name: ${{ env.CONTAINER_NAME2 }}
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.task-def-image2.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
