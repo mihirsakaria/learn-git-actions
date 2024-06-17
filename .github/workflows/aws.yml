@@ -111,8 +111,8 @@ jobs:
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
           echo "docker pulled"
           # Run the Docker container
-          sudo docker run -d -p 8001:8001 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} --name docker1
-          sudo docker run -d -p 8000:8000 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}} --name docker2
+          sudo docker run -d -p 8001:8001 --name docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
+          sudo docker run -d -p 8000:8000 --name docker2 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
           echo "docker ran"
         EOF
       env:
