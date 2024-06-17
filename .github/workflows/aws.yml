@@ -100,7 +100,12 @@ jobs:
           # Log in to Amazon ECR
           aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
           # aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
-          echo "aws cli logged in"
+          echo "aws cli logged in : ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} , ${{env.IMAGE_TAG2}}"
+          sudo docker stop docker1
+          sudo docker container rm docker1
+          sudo docker stop docker2
+          sudo docker container rm docker2
+          sudo docker image prune -a
           # Pull the Docker image
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}}
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
