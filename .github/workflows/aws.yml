@@ -102,10 +102,10 @@ jobs:
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 851725252778.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
           # Pull the Docker image
-          docker pull 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+          sudo docker pull 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
 
           # Run the Docker container
-          docker run -d -p 8000:8000 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+          sudo docker run -d -p 8000:8000 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
         EOF
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
