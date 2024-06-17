@@ -84,7 +84,7 @@ jobs:
         echo "image2=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
     
     - name: Show images just created
-      run: echo ${{steps.build-iamge.outputs.image1}} ${{steps.build-iamge.outputs.image2}}
+      run: echo ${{steps.build-image.outputs.image1}} ${{steps.build-image.outputs.image2}}
     
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def-image1
