@@ -98,13 +98,14 @@ jobs:
           fi
           echo "docker is installed"
           # Log in to Amazon ECR
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          # aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin 851725252778.dkr.ecr.ap-south-1.amazonaws.com
           echo "aws cli logged in"
           # Pull the Docker image
-          sudo docker pull ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+          sudo docker pull 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
           echo "docker pulled"
           # Run the Docker container
-          sudo docker run -d -p 8000:8000 ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
+          sudo docker run -d -p 8000:8000 851725252778.dkr.ecr.ap-south-1.amazonaws.com/practice:fe5c67903ef58f001acb048b05f6d56887e81699
           echo "docker ran"
         EOF
       env:
