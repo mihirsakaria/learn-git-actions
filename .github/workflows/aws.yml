@@ -117,6 +117,9 @@ jobs:
         EOF
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG1: ${{ github.sha }}-${{github.run_id}}
+        IMAGE_TAG2: ${{ github.sha }}
         # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         # AWS_REGION: ${{ env.AWS_REGION }}
 
