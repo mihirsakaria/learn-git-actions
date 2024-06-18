@@ -28,7 +28,7 @@ name: Deploy to Amazon ECS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "stage" ]
 
 env:
   AWS_REGION: ap-south-1                   # set this to your preferred AWS region, e.g. us-west-1
@@ -64,62 +64,49 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-      
-
-    
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        ls
-        docker compose build
-        docker compose push
     
 
-    # - name: Set up SSH
-    #   uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
-    #   with:
-    #     EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-    #     EC2_URL: ${{secrets.EC2_HOST}}
+    - name: Set up SSH
+      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
+      with:
+        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_URL: ${{secrets.EC2_HOST}}
   
-    # - name: Deploy to EC2
-    #   run: |
-    #     scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
+    - name: Deploy to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
 
-    #     ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-    #       # Ensure Docker is installed
-    #       if ! [ -x "$(command -v docker)" ]; then
-    #         sudo apt-get update
-    #         sudo apt-get install -y docker.io
-    #       fi
-    #       ls 
-    #       # Log in to Amazon ECR
-    #       aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{env.ECR_REGISTRY}}
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          # Ensure Docker is installed
+          if ! [ -x "$(command -v docker)" ]; then
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+          fi
+          ls 
+          # Log in to Amazon ECR
+          aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{env.ECR_REGISTRY}}
           
-    #       sudo docker stop docker1
-    #       sudo docker container rm docker1
-    #       sudo docker stop docker2
-    #       sudo docker container rm docker2
-    #       # Pull the Docker image
+          sudo docker stop docker1
+          sudo docker container rm docker1
+          sudo docker stop docker2
+          sudo docker container rm docker2
+          # Pull the Docker image
 
-    #       sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}}
-    #       sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:scheduler_latest
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:worker_latest
           
-    #       # Run the Docker container
-    #       # sudo docker compose up -d
-    #       # sudo docker run -d -p 8001:8001 --name docker1 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
-    #       # sudo docker run -d -p 8000:8000 --name docker2 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
-    #       # sudo docker run -d -p 
+          # Run the Docker container
+          sudo docker compose up -d
+          # sudo docker run -d -p 8001:8001 --name docker1 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
+          # sudo docker run -d -p 8000:8000 --name docker2 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
+          # sudo docker run -d -p 
           
-    #     EOF
-    #   env:
-    #     AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        
+        EOF
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG1: ${{ github.sha }}-${{github.run_id}}
+        IMAGE_TAG2: ${{ github.sha }}
         # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         # AWS_REGION: ${{ env.AWS_REGION }}
 
