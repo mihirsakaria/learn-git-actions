@@ -64,8 +64,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
-    # - name: List Files for Debugging
-    #   run: ls -al .
+
     
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -83,11 +82,16 @@ jobs:
         echo "image1=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1" >> $GITHUB_OUTPUT
         echo "image2=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2" >> $GITHUB_OUTPUT
     
+    # - name: Set up SSH
+    #   uses: webfactory/ssh-agent@v0.5.3
+    #   with:
+    #     ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+    
     - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
+      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
       with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-
+        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_URL: ${{secrets.EC2_HOST}}
   
     - name: Deploy to EC2
       run: |
