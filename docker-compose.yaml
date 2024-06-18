@@ -7,6 +7,8 @@ services:
     container_name: docker1
     env_file:
       - .env
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "8000:8000"
     restart: always
@@ -19,6 +21,8 @@ services:
     container_name: docker2
     env_file:
       - .env
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "8001:8001"
     restart: always
