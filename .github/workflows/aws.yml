@@ -91,7 +91,7 @@ jobs:
   
     - name: Deploy to EC2
       run: |
-        scp -o StrictHostKeyChecking=no .env ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
+        scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
 
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Ensure Docker is installed
@@ -113,9 +113,10 @@ jobs:
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
           
           # Run the Docker container
-          
-          sudo docker run -d -p 8001:8001 --name docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
-          sudo docker run -d -p 8000:8000 --name docker2 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
+          sudo docker compose up -d
+          # sudo docker run -d -p 8001:8001 --name docker1 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
+          # sudo docker run -d -p 8000:8000 --name docker2 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
+          # sudo docker run -d -p 
           
         EOF
       env:
