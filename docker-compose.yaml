@@ -4,7 +4,9 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.a
-    container_name: scheduler
+    container_name: docker1
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     restart: always
@@ -14,7 +16,9 @@ services:
     build:
       context: server2
       dockerfile: ./Dockerfile.b
-    container_name: worker
+    container_name: docker2
+    env_file:
+      - .env
     ports:
       - "8001:8001"
     restart: always
