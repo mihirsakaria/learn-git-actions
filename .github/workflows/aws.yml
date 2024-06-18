@@ -97,7 +97,7 @@ jobs:
   
     - name: Deploy to EC2
       run: |
-        scp .env -o StrictHostKeyChecking=no ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
+        scp -o StrictHostKeyChecking=no .env ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
 
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Ensure Docker is installed
