@@ -87,12 +87,6 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-    
-    # - name: Load ENV varialbes
-    #   uses: dotenv-linter/action-dotenv-linter@v2
-    #   with:
-    #     file: '.env'
-
 
   
     - name: Deploy to EC2
