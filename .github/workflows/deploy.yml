@@ -30,7 +30,8 @@ on: workflow_dispatch
 
 env:
   AWS_REGION: ap-south-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: practice
+  ECR_SCHEDULER_REPOSITORY: practice
+  ECR_WORKER_REPOSITORY: practice2
 #   ECR_WORKER_REPOSITORY: practice2           # set this to your Amazon ECR repository name
   # ECS_SERVICE: practice-depl-service                 # set this to your Amazon ECS service name
   # ECS_CLUSTER: practiceCluster3                 # set this to your Amazon ECS cluster name
@@ -90,26 +91,19 @@ jobs:
           sudo docker container rm docker2
           # Pull the Docker image
 
-          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:scheduler_latest
-          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:worker_latest
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
           
           sudo docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --restart always --env-file .env -v $(pwd)/rabbitmq_data:/var/lib/rabbitmq rabbitmq:3.12-management
-          sudo docker run -d --name docker1 -p 8000:8000 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:scheduler_latest
-          sudo docker run -d --name docker2 -p 8001:8001 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq --link docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:worker_latest
+          sudo docker run -d --name docker1 -p 8000:8000 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
+          sudo docker run -d --name docker2 -p 8001:8001 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq --link docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
          
-          # Run the Docker container
-          # sudo docker compose up -d
-          # sudo docker run -d -p 8001:8001 --name docker1 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
-          # sudo docker run -d -p 8000:8000 --name docker2 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
-          # sudo docker run -d -p 
           
         EOF
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG1: ${{ github.sha }}-${{github.run_id}}
-        IMAGE_TAG2: ${{ github.sha }}
-        ECR_REPOSITORY : ${{env.ECR_REPOSITORY}}
+        # ECR_REPOSITORY : ${{env.ECR_REPOSITORY}}
         # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         # AWS_REGION: ${{ env.AWS_REGION }}
 
