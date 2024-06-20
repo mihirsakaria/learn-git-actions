@@ -71,11 +71,11 @@ jobs:
         oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
         tags: tag:ci
 
-    - name: Set up SSH
-      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
-      with:
-        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        EC2_URL: internal-ec2-instance #${{secrets.EC2_HOST}}
+    # - name: Set up SSH
+    #   uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
+    #   with:
+    #     EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+    #     EC2_URL: internal-ec2-instance #${{secrets.EC2_HOST}}
     
       
     - name: Deploy to EC2
