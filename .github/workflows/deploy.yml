@@ -65,11 +65,11 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
     
 
-    # - name: Set up SSH
-    #   uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
-    #   with:
-    #     EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-    #     EC2_URL: ${{secrets.EC2_HOST}}
+    - name: Set up SSH
+      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
+      with:
+        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_URL: internal-ec2-instance #${{secrets.EC2_HOST}}
     
     - name: Tailscale
       uses: tailscale/github-action@v2
