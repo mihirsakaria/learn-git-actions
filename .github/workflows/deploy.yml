@@ -64,6 +64,12 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+        tags: tag:ci
 
     - name: Set up SSH
       uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
@@ -71,12 +77,6 @@ jobs:
         EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         EC2_URL: internal-ec2-instance #${{secrets.EC2_HOST}}
     
-    - name: Tailscale
-      uses: tailscale/github-action@v2
-      with:
-        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-        tags: tag:ci
       
     - name: Deploy to EC2
       run: |
