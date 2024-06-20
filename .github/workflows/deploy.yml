@@ -71,12 +71,12 @@ jobs:
         EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         EC2_URL: ${{secrets.EC2_HOST}}
     
-    # - name: Tailscale
-    #   uses: tailscale/github-action@v2
-    #   with:
-    #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-    #     oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-    #     tags: tag:ci
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+        tags: tag:ci
       
     - name: Deploy to EC2
       run: |
