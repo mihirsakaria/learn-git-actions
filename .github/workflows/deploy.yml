@@ -65,11 +65,11 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
     
 
-    - name: Set up SSH
-      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
-      with:
-        EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        EC2_URL: ${{secrets.EC2_HOST}}
+    # - name: Set up SSH
+    #   uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
+    #   with:
+    #     EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+    #     EC2_URL: ${{secrets.EC2_HOST}}
     
     - name: Tailscale
       uses: tailscale/github-action@v2
@@ -81,8 +81,8 @@ jobs:
     - name: Deploy to EC2
       run: |
         # scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
-        scp -o StrictHostKeyChecking=no .env ubuntu@ip-172-31-34-113:/home/ubuntu/
-        ssh -o StrictHostKeyChecking=no ubuntu@ip-172-31-34-113 << 'EOF'
+        scp -o StrictHostKeyChecking=no .env ubuntu@internal-ec2-instance:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no ubuntu@internal-ec2-instance << 'EOF'
         # ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Ensure Docker is installed
           if ! [ -x "$(command -v docker)" ]; then
