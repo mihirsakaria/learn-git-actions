@@ -80,10 +80,9 @@ jobs:
       
     - name: Deploy to EC2
       run: |
-        # scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
-        scp -o StrictHostKeyChecking=no .env ubuntu@internal-ec2-instance:/home/ubuntu/
+        
         ssh -o StrictHostKeyChecking=no ubuntu@internal-ec2-instance << 'EOF'
-        # ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        
           # Ensure Docker is installed
           if ! [ -x "$(command -v docker)" ]; then
             sudo apt-get update
