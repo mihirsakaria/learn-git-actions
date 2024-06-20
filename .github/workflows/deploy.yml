@@ -70,12 +70,20 @@ jobs:
       with:
         EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         EC2_URL: ${{secrets.EC2_HOST}}
-  
+    
+    # - name: Tailscale
+    #   uses: tailscale/github-action@v2
+    #   with:
+    #     oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+    #     oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+    #     tags: tag:ci
+      
     - name: Deploy to EC2
       run: |
-        scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
-
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        # scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
+        scp -o StrictHostKeyChecking=no .env ubuntu@ip-172-31-34-113:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no ubuntu@ip-172-31-34-113 << 'EOF'
+        # ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Ensure Docker is installed
           if ! [ -x "$(command -v docker)" ]; then
             sudo apt-get update
