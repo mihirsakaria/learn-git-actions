@@ -81,7 +81,7 @@ jobs:
     - name: Deploy to EC2
       run: |
         
-        ssh ubuntu@internal-ec2-instance << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@internal-ec2-instance << 'EOF'
         
           # Ensure Docker is installed
           if ! [ -x "$(command -v docker)" ]; then
