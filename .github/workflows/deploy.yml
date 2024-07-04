@@ -96,14 +96,19 @@ jobs:
           sudo docker container rm docker1
           sudo docker stop docker2
           sudo docker container rm docker2
-          # Pull the Docker image
-
-          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
-          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
           
-          sudo docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --restart always --env-file .env -v $(pwd)/rabbitmq_data:/var/lib/rabbitmq rabbitmq:3.12-management
-          sudo docker run -d --name docker1 -p 8000:8000 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
-          sudo docker run -d --name docker2 -p 8001:8001 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq --link docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
+          # Pull the Docker image
+          sudo docker compose pull
+
+          #Run the dockers
+          sudo docker compose up -d
+
+          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
+          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
+          
+          # sudo docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 --restart always --env-file .env -v $(pwd)/rabbitmq_data:/var/lib/rabbitmq rabbitmq:3.12-management
+          # sudo docker run -d --name docker1 -p 8000:8000 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
+          # sudo docker run -d --name docker2 -p 8001:8001 --restart always --env-file .env --security-opt no-new-privileges:true --link rabbitmq --link docker1 ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
          
           
         EOF
