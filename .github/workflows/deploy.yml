@@ -79,6 +79,10 @@ jobs:
     
       
     - name: Deploy to EC2
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_SCHEDULER_REPOSITORY : ${{env.ECR_SCHEDULER_REPOSITORY}}
+        ECR_WORKER_REPOSITORY : ${{env.ECR_WORKER_REPOSITORY}}
       run: |
         
         ssh -o StrictHostKeyChecking=no ubuntu@internal-ec2-instance << 'EOF'
@@ -119,43 +123,7 @@ jobs:
          
           
         EOF
-      env:
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_SCHEDULER_REPOSITORY : ${{env.ECR_SCHEDULER_REPOSITORY}}
-        ECR_WORKER_REPOSITORY : ${{env.ECR_WORKER_REPOSITORY}}
-         # ECR_REPOSITORY : ${{env.ECR_REPOSITORY}}
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        # AWS_REGION: ${{ env.AWS_REGION }}
+      
 
-    
-    # - name: Show images just created
-    #   run: echo ${{steps.build-image.outputs.image1}} ${{steps.build-image.outputs.image2}}
-    
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def-image1
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
-    #     container-name: ${{ env.CONTAINER_NAME1 }}
-    #     image: ${{ steps.build-image.outputs.image1 }}
-
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def-image2
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.task-def-image1.outputs.task-definition }}
-    #     container-name: ${{ env.CONTAINER_NAME2 }}
-    #     image: ${{ steps.build-image.outputs.image2 }}
-
-    # - name: Deploy Amazon ECS task definition
-    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.task-def-image2.outputs.task-definition }}
-    #     service: ${{ env.ECS_SERVICE }}
-    #     cluster: ${{ env.ECS_CLUSTER }}
-    #     wait-for-service-stability: true
-    # - name: Output ECS service events for debugging
-    #   run: |
-    #     aws ecs describe-services --services ${{ env.ECS_SERVICE }} --cluster ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }}
+  
 
