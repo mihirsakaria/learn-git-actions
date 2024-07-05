@@ -34,12 +34,6 @@ env:
   AWS_REGION: ap-south-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_SCHEDULER_REPOSITORY: practice
   ECR_WORKER_REPOSITORY: practice2           # set this to your Amazon ECR repository name
-  # ECS_SERVICE: practice-depl-service                 # set this to your Amazon ECS service name
-  # ECS_CLUSTER: practiceCluster3                 # set this to your Amazon ECS cluster name
-  # ECS_TASK_DEFINITION: task-definition.json # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  # CONTAINER_NAME1: practice1           # set this to the name of the container in the
-  # CONTAINER_NAME2: practice2                   # containerDefinitions section of your task definition
 
 permissions:
   contents: read
@@ -74,83 +68,10 @@ jobs:
       run: |
         # Build a docker container and
         # push it to ECR so that it can
-        # be deployed to ECS.
-        ls
+        # be deployed to ECR.
+
         docker compose build
         docker compose push
     
 
-    # - name: Set up SSH
-    #   uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
-    #   with:
-    #     EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-    #     EC2_URL: ${{secrets.EC2_HOST}}
-  
-    # - name: Deploy to EC2
-    #   run: |
-    #     scp -o StrictHostKeyChecking=no .env docker-compose.yaml ubuntu@${{secrets.EC2_HOST}}:/home/ubuntu/
-
-    #     ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-    #       # Ensure Docker is installed
-    #       if ! [ -x "$(command -v docker)" ]; then
-    #         sudo apt-get update
-    #         sudo apt-get install -y docker.io
-    #       fi
-    #       ls 
-    #       # Log in to Amazon ECR
-    #       aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{env.ECR_REGISTRY}}
-          
-    #       sudo docker stop docker1
-    #       sudo docker container rm docker1
-    #       sudo docker stop docker2
-    #       sudo docker container rm docker2
-    #       # Pull the Docker image
-
-    #       sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}}
-    #       sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
-          
-    #       # Run the Docker container
-    #       # sudo docker compose up -d
-    #       # sudo docker run -d -p 8001:8001 --name docker1 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG1}} 
-    #       # sudo docker run -d -p 8000:8000 --name docker2 --env-file .env ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG2}}
-    #       # sudo docker run -d -p 
-          
-    #     EOF
-    #   env:
-    #     AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        # AWS_REGION: ${{ env.AWS_REGION }}
-
-    
-    # - name: Show images just created
-    #   run: echo ${{steps.build-image.outputs.image1}} ${{steps.build-image.outputs.image2}}
-    
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def-image1
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
-    #     container-name: ${{ env.CONTAINER_NAME1 }}
-    #     image: ${{ steps.build-image.outputs.image1 }}
-
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def-image2
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.task-def-image1.outputs.task-definition }}
-    #     container-name: ${{ env.CONTAINER_NAME2 }}
-    #     image: ${{ steps.build-image.outputs.image2 }}
-
-    # - name: Deploy Amazon ECS task definition
-    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.task-def-image2.outputs.task-definition }}
-    #     service: ${{ env.ECS_SERVICE }}
-    #     cluster: ${{ env.ECS_CLUSTER }}
-    #     wait-for-service-stability: true
-    # - name: Output ECS service events for debugging
-    #   run: |
-    #     aws ecs describe-services --services ${{ env.ECS_SERVICE }} --cluster ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }}
-
+   
