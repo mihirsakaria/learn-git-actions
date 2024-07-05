@@ -1,6 +1,6 @@
 services:
   scheduler:
-    image: ${ECR_REGISTRY}/${ECR_SCHEDULER_REPOSITORY}:latest
+    image: $ECR_REGISTRY/$ECR_SCHEDULER_REPOSITORY:latest
     build:
       context: .
       dockerfile: ./Dockerfile.a
@@ -14,7 +14,7 @@ services:
     restart: always
     
   worker:
-    image: ${ECR_REGISTRY}/${ECR_WORKER_REPOSITORY}:latest
+    image: $ECR_REGISTRY/$ECR_WORKER_REPOSITORY:latest
     build:
       context: server2
       dockerfile: ./Dockerfile.b
