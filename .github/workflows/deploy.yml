@@ -81,8 +81,6 @@ jobs:
     - name: Deploy to EC2
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_SCHEDULER_REPOSITORY : ${{env.ECR_SCHEDULER_REPOSITORY}}
-        ECR_WORKER_REPOSITORY : ${{env.ECR_WORKER_REPOSITORY}}
       run: |
         
         ssh -o StrictHostKeyChecking=no ubuntu@internal-ec2-instance << 'EOF'
@@ -101,18 +99,6 @@ jobs:
           sudo docker stop docker2
           sudo docker container rm docker2
           
-          # env
-          
-          # export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          # export ECR_SCHEDULER_REPOSITORY=${{env.ECR_SCHEDULER_REPOSITORY}}
-          # export ECR_WORKER_REPOSITORY=${{env.ECR_WORKER_REPOSITORY}}
-          
-          # env 
-          # # Pull the Docker image
-          # sudo docker compose pull
-
-          # #Run the dockers
-          # sudo docker compose up -d
 
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
           sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
