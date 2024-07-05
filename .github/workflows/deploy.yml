@@ -100,9 +100,8 @@ jobs:
           # sudo docker container rm docker2
           
 
-          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
-          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
-          sudo docker compose pull
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
+          sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
 
           sudo docker compose down
           sudo docker compose up -d
