@@ -94,14 +94,6 @@ jobs:
           # Log in to Amazon ECR
           aws ecr get-login-password --region ${{env.AWS_REGION}} | sudo docker login --username AWS --password-stdin ${{env.ECR_REGISTRY}}
           
-          # sudo docker stop docker1
-          # sudo docker container rm docker1
-          # sudo docker stop docker2
-          # sudo docker container rm docker2
-          
-
-          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_SCHEDULER_REPOSITORY}}:latest
-          # sudo docker pull ${{env.ECR_REGISTRY}}/${{env.ECR_WORKER_REPOSITORY}}:latest
           echo -e "ECR_REGISTRY=${{env.ECR_REGISTRY}}\nECR_SCHEDULER_REPOSITORY=${{env.ECR_SCHEDULER_REPOSITORY}}\nECR_WORKER_REPOSITORY=${{env.ECR_WORKER_REPOSITORY}}" > .env
           
           sudo docker compose pull
