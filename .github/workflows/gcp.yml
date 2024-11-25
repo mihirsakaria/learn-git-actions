@@ -1,11 +1,11 @@
 name: Build and Push to GCP Artifact Registry
-
-on:
-  push:
-    branches:
-      - main
-  # Allows manual workflow execution
-  workflow_dispatch:
+on: [workflow_dispatch]
+# on:
+#   push:
+#     branches:
+#       - main
+#   # Allows manual workflow execution
+#   workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }} 
